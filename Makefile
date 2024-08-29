@@ -13,21 +13,15 @@ update:
 	poetry up --latest
 
 checks: pc install lint test
-
 pc:
 	pre-commit run -a
-
 lint:
 	poetry run poe lint
-
 test:
 	poetry run poe test
 
 docs:
 	poetry run mkdocs serve
-
-run:
-	poetry run uvicorn --reload galaxy_update:app
 
 bumped:
 	git cliff --bumped-version

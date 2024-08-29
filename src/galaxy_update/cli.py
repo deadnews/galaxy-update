@@ -25,7 +25,7 @@ async def update_requirements(requirements: tuple[Path]) -> None:
     # Create a HTTP client
     async with httpx.AsyncClient() as client:
         base_url = "https://galaxy.ansible.com/api"
-        collection_path = "v3/plugin/ansible/content/published/collections/index"
+        collections_index = "v3/plugin/ansible/content/published/collections/index"
 
         for requirements_file in requirements:
             # Load the requirements file
@@ -33,13 +33,10 @@ async def update_requirements(requirements: tuple[Path]) -> None:
 
             # Update the versions
             for collection in reqs["collections"]:
-                name = collection["name"]
-                response = await client.get(
-                    f'{base_url}/{collection_path}/{name.replace(".", "/")}/versions/'
-                )
+                name = collection["name"].replace(".", "/")
+                response = await client.get(f"{base_url}/{collections_index}/{name}/versions/")
                 response.raise_for_status()
-                latest_version = response.json()["data"][0]["version"]
-                collection["version"] = latest_version
+                collection["version"] = response.json()["data"][0]["version"]
 
             # Write the updated requirements back to the file
-            requirements_file.write_text(yaml.safe_dump(reqs))
+            requirements_file.write_text(yaml.safe_dump(reqs, explicit_start=True))
