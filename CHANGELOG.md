@@ -1,9 +1,11 @@
 # Changelog
 
-## [0.0.1-alpha.0](https://github.com/DeadNews/galaxy-update/commits/v0.0.1-alpha.0) - 2024-06-05
+## [0.0.1-alpha.1](https://github.com/DeadNews/galaxy-update/commits/v0.0.1-alpha.1) - 2024-08-31
 
 ### 🚀 Features
 
+- init - ([33568a1](https://github.com/DeadNews/galaxy-update/commit/33568a104d07d7090e997d537992c5f75e00f5d2))
+- init - ([cf2f6fb](https://github.com/DeadNews/galaxy-update/commit/cf2f6fb17acefe1a9828dbaa0d7e96b6c38aedd7))
 - init - ([3077060](https://github.com/DeadNews/galaxy-update/commit/3077060c638171a650fe7795ba2f15ef596bcf32))
 - init - ([7442c5c](https://github.com/DeadNews/galaxy-update/commit/7442c5cc84ab6dd86d8cf230e5e8c573df9cc555))
 
