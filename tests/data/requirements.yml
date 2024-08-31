@@ -6,5 +6,3 @@ collections:
     version: 1.5.4
   - name: ansible.utils
     version: 4.1.0
-  - name: deadnews.util
-    version: 1.4.0

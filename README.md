@@ -11,8 +11,6 @@
 
 ## Installation
 
-PyPI
-
 ```sh
 pip install galaxy-update
 # or
