@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
     runs-on: ${{ matrix.os }}
     steps:
@@ -141,7 +141,7 @@ jobs:
 
   docs-deploy:
     name: Deploy docs
-    if: true && !contains(github.ref, 'alpha')
+    # if: true && !contains(github.ref, 'alpha')
     needs: [docs-build]
     environment:
       name: github-pages
