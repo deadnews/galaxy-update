@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "charliermarsh.ruff",
+    "ms-pyright.pyright",
+    "ms-python.mypy-type-checker",
+    "ms-python.python",
+    "tamasfe.even-better-toml"
+  ]
+}
