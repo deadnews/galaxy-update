@@ -141,7 +141,7 @@ jobs:
 
   docs-deploy:
     name: Deploy docs
-    # if: true && !contains(github.ref, 'alpha')
+    # if: true && !contains(github.ref, 'alpha') # TODO: Uncomment this line to deploy only on stable releases
     needs: [docs-build]
     environment:
       name: github-pages
