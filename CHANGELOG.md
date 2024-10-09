@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.2-alpha.0](https://github.com/DeadNews/galaxy-update/compare/v0.0.1...v0.0.2-alpha.0) - 2024-10-09
+
+### ⚙️ CI/CD
+
+- _(github)_ add `python:3.13` to tests matrix - ([d08e211](https://github.com/DeadNews/galaxy-update/commit/d08e211aae6b63617bbb0e789c31bc650c37353d))
+
 ## [0.0.1](https://github.com/DeadNews/galaxy-update/commits/v0.0.1) - 2024-08-31
 
 ### 🚀 Features
