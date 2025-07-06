@@ -1,11 +1,10 @@
 # Changelog
 
-## [1.0.0-alpha.0](https://github.com/DeadNews/galaxy-update/compare/v0.0.1...v1.0.0-alpha.0) - 2025-07-06
+## [1.0.0](https://github.com/DeadNews/galaxy-update/compare/v0.0.1...v1.0.0) - 2025-07-06
 
 ### 🚀 Features
 
-- use `pyaml` for yaml dumping - ([46db9ab](https://github.com/DeadNews/galaxy-update/commit/46db9ab966a88f2cbf19bc89d2d38894272f7a1f))
-- migrate from `poetry` to `uv` - ([6eb6854](https://github.com/DeadNews/galaxy-update/commit/6eb685446aaf363a3bf2f67b34c7be94975c2061))
+- migrate from `poetry` to `uv` ([#40](https://github.com/deadnews/galaxy-update/issues/40)) - ([95ca842](https://github.com/DeadNews/galaxy-update/commit/95ca842c993c7f017e05f0ac70688274aa213c8d))
 
 ### 🧹 Chores
 
