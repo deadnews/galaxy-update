@@ -9,7 +9,12 @@ keywords        = ["ansible", "galaxy", "ansible-galaxy ", "requirements"]
 dynamic         = ["version"]
 requires-python = ">=3.10"
 
-dependencies = ["click>=8.1.7", "httpx>=0.28.0", "pyyaml>=6.0.2"]
+dependencies = [
+  "click>=8.1.7",
+  "httpx>=0.28.0",
+  "pyyaml>=6.0.2",
+  "pyaml>=25.5.0",
+]
 
 [dependency-groups]
 dev = [
@@ -19,6 +24,7 @@ dev = [
   "types-pyyaml>=6.0.12.20240917",
   "pytest>=8.4.1",
   "pytest-cov>=6.2.1",
+  "pytest-mock>=3.14.0",
 ]
 
 [project.scripts]
@@ -65,6 +71,7 @@ ignore = [
 [tool.pytest.ini_options]
 addopts   = "--verbose --cov=./src --cov-report=term --cov-report=xml"
 testpaths = ["tests"]
+markers   = ["online"]
 
 [tool.coverage.report]
 exclude_lines = [

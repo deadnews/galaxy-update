@@ -5,6 +5,7 @@ from pathlib import Path
 
 import click
 import httpx
+import pyaml
 import yaml
 
 
@@ -15,6 +16,7 @@ import yaml
     required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
 )
+@click.version_option()
 def cli(requirements: tuple[Path]) -> None:
     """Update dependencies in requirements.yml."""
     asyncio.run(update_requirements(requirements))
@@ -39,4 +41,5 @@ async def update_requirements(requirements: tuple[Path]) -> None:
                 collection["version"] = response.json()["data"][0]["version"]
 
             # Write the updated requirements back to the file
-            requirements_file.write_text(yaml.safe_dump(reqs, explicit_start=True))
+            updated = pyaml.dump(reqs, explicit_start=True)
+            requirements_file.write_text(str(updated))
