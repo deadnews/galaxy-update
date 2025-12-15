@@ -13,5 +13,5 @@
 ```sh
 pip install galaxy-update
 # or
-pipx install galaxy-update
+uv tool install galaxy-update
 ```
