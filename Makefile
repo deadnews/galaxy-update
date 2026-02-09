@@ -12,15 +12,15 @@ lint:
 test:
 	uv run pytest
 
-install:
-	uv sync
-
 update: up up-ci
 up:
 	uv sync --upgrade
 up-ci:
 	prek auto-update
 	pinact run -update
+
+run:
+	uv run galaxy-update tests/data/requirements.yml
 
 bumped:
 	git cliff --bumped-version

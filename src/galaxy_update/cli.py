@@ -8,6 +8,9 @@ import httpx
 import pyaml
 import yaml
 
+GALAXY_API = "https://galaxy.ansible.com/api"
+COLLECTIONS_INDEX = "v3/plugin/ansible/content/published/collections/index"
+
 
 @click.command()
 @click.argument(
@@ -22,24 +25,27 @@ def cli(requirements: tuple[Path]) -> None:
     asyncio.run(update_requirements(requirements))
 
 
+async def fetch_latest_version(client: httpx.AsyncClient, name: str) -> str:
+    """Fetch the highest version of a collection from Ansible Galaxy."""
+    namespace, collection = name.split(".", maxsplit=1)
+    url = f"{GALAXY_API}/{COLLECTIONS_INDEX}/{namespace}/{collection}/"
+    response = await client.get(url)
+    response.raise_for_status()
+
+    return response.json()["highest_version"]["version"]
+
+
 async def update_requirements(requirements: tuple[Path]) -> None:
     """Update dependencies in requirements.yml."""
-    # Create a HTTP client
     async with httpx.AsyncClient() as client:
-        base_url = "https://galaxy.ansible.com/api"
-        collections_index = "v3/plugin/ansible/content/published/collections/index"
-
         for requirements_file in requirements:
-            # Load the requirements file
             reqs = yaml.safe_load(requirements_file.read_text())
+            collections = reqs["collections"]
 
-            # Update the versions
-            for collection in reqs["collections"]:
-                name = collection["name"].replace(".", "/")
-                response = await client.get(f"{base_url}/{collections_index}/{name}/versions/")
-                response.raise_for_status()
-                collection["version"] = response.json()["data"][0]["version"]
+            versions = await asyncio.gather(
+                *(fetch_latest_version(client, c["name"]) for c in collections)
+            )
+            for collection, version in zip(collections, versions, strict=True):
+                collection["version"] = version
 
-            # Write the updated requirements back to the file
-            updated = pyaml.dump(reqs, explicit_start=True)
-            requirements_file.write_text(str(updated))
+            requirements_file.write_text(str(pyaml.dump(reqs, explicit_start=True)))

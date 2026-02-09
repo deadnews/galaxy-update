@@ -11,7 +11,11 @@
 ## Installation
 
 ```sh
-pip install galaxy-update
-# or
 uv tool install galaxy-update
+```
+
+## Usage
+
+```sh
+galaxy-update requirements.yml
 ```

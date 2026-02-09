@@ -9,18 +9,10 @@ collections:
 """
 
 API_RESPONSE = {
-    "meta": {"count": 58},
-    "links": {},
-    "data": [
-        {
-            "version": "6.0.0",
-            "href": "/api/v3/plugin/ansible/content/published/collections/index/ansible/utils/versions/6.0.0/",
-            "created_at": "2025-04-14T06:20:22.435485Z",
-            "updated_at": "2025-04-14T06:20:22.587797Z",
-            "requires_ansible": ">=2.16.0",
-            "marks": [],
-        },
-    ],
+    "highest_version": {
+        "href": "/api/v3/plugin/ansible/content/published/collections/index/ansible/utils/versions/6.0.0/",
+        "version": "6.0.0",
+    },
 }
 
 
@@ -38,3 +30,16 @@ def test_cli_updates_version(tmp_path, mocker):
     assert result.exit_code == 0
     out = req_path.read_text()
     assert "version: 6.0.0" in out
+
+
+def test_cli_no_args():
+    runner = CliRunner()
+    result = runner.invoke(cli, [])
+    assert result.exit_code != 0
+    assert "Missing argument" in result.output
+
+
+def test_cli_file_not_found():
+    runner = CliRunner()
+    result = runner.invoke(cli, ["nonexistent.yml"])
+    assert result.exit_code != 0

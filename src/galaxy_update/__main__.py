@@ -1,4 +1,4 @@
-"""Entrypoint for cli, enables execution with `python -m gitlab_template_python`."""
+"""Entrypoint for cli, enables execution with `python -m galaxy_update`."""
 
 from galaxy_update.cli import cli
 
