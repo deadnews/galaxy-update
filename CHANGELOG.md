@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.0.1](https://github.com/deadnews/galaxy-update/compare/v1.0.0...v1.0.1) - 2026-02-09
+
+### Bug fixes
+
+- switch from the versions list endpoint to the collection index endpoint - ([76379e4](https://github.com/deadnews/galaxy-update/commit/76379e454c5a30cb2c8547dec68d639d32c7602c))
+
+### Chores
+
+- _(git-cliff)_ update config - ([2cb8aca](https://github.com/deadnews/galaxy-update/commit/2cb8aca7520c40a35863b74544dfa1525ce92546))
+- _(prek)_ add `zizmor` hook - ([e553707](https://github.com/deadnews/galaxy-update/commit/e55370784bc36dfdec415f7905251619cae719f2))
+- replace `mypy` and `pyright` with `ty` - ([852019d](https://github.com/deadnews/galaxy-update/commit/852019d300dcd08114645ea284ed516432716dc4))
+
 ## [1.0.0](https://github.com/deadnews/galaxy-update/compare/v0.0.1...v1.0.0) - 2025-07-06
 
 ### Features
