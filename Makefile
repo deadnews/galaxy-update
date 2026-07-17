@@ -1,26 +1,31 @@
-.PHONY: all clean default install lock update up check pc test docs run
+.PHONY: all clean default run build update up check pc test
 
 default: check
 
-check: pc lint test
+check: pc test
 pc:
 	prek run -a
-lint:
-	uv run ruff check .
-	uv run ruff format .
-	uv run ty check .
 test:
-	uv run pytest
+	go test -race -covermode=atomic -coverprofile=coverage.txt ./...
+	@go tool cover -func=coverage.txt | tail -1
 
 update: up up-ci
 up:
-	uv sync --upgrade
+	go get -u -t ./...
+	go mod tidy
+	go mod verify
 up-ci:
-	prek auto-update
-	pinact run -update
+	prek update
+	pinact run --update
 
 run:
-	uv run galaxy-update tests/data/requirements.yml
+	go run ./cmd/galaxy-update --help
+
+build:
+	go build -ldflags=-s -o ./dist/ ./...
+
+goreleaser:
+	goreleaser --clean --snapshot --skip=publish
 
 bumped:
 	git cliff --bumped-version
