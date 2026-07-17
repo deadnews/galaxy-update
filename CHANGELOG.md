@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.0-alpha.0](https://github.com/deadnews/galaxy-update/compare/v1.0.1...v1.1.0-alpha.0) - 2026-07-17
+
+### Features
+
+- support roles and preserve comments on update - ([99048ee](https://github.com/deadnews/galaxy-update/commit/99048ee0b3425db3e312bb6cc8dacdd64b00c2f9))
+
 ## [1.0.1](https://github.com/deadnews/galaxy-update/compare/v1.0.0...v1.0.1) - 2026-02-09
 
 ### Bug fixes
@@ -28,7 +34,7 @@
 - update dependency click to v8.2.1 ([#37](https://github.com/deadnews/galaxy-update/issues/37)) - ([237814c](https://github.com/deadnews/galaxy-update/commit/237814c6990bb99a96fdf4725f16906c128bbd4e))
 - update dependency httpx to v0.28.1 ([#20](https://github.com/deadnews/galaxy-update/issues/20)) - ([2de5746](https://github.com/deadnews/galaxy-update/commit/2de5746159fd030b036d3b0d9c5f21d3d3a6e258))
 
-## [0.0.1](https://github.com/deadnews/galaxy-update/commits/v0.0.1) - 2024-08-31}
+## [0.0.1](https://github.com/deadnews/galaxy-update/commits/v0.0.1) - 2024-08-31
 
 ### Features
 

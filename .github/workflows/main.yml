@@ -11,54 +11,45 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint code
+  prek:
+    name: Prek
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
-        with:
-          enable-cache: true
-
-      - name: Install project
-        run: uv sync --frozen
-
-      - name: Lint code
-        run: make lint
+      - name: Run prek
+        uses: j178/prek-action@e98a699c41eb69ab013a45817a0406469a748f8d # v2.0.5
 
   test:
-    name: Tests
+    name: Test
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.13", "3.14"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          enable-cache: true
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install project
-        run: uv sync --frozen
+          go-version-file: go.mod
 
       - name: Run tests
         run: make test
 
-      - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.14'
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+      - name: Upload coverage
+        uses: deadnews/coverage-badge-action@bc4aaf332f25c52d1e8dd21ef9ed0b2337ad39af # v1.0.0
+        if: github.event_name == 'push' && matrix.os == 'ubuntu-latest'
+        with:
+          file: coverage.txt
+          type: go
 
   pypi-deploy:
     name: Release to PyPI
     if: github.ref_type == 'tag'
-    needs: [lint, test]
+    needs: [prek, test]
     environment: pypi
     permissions:
       id-token: write
@@ -66,37 +57,41 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          enable-cache: true
+          go-version-file: go.mod
 
-      - name: Build package
-        run: uv build
+      - name: Build wheels
+        uses: deadnews/go-wheel-action@43cbcbbfa58c9b275384331096519d169ab53383 # v1.0.2
+        with:
+          package: ./cmd/galaxy-update
+          ldflags: -s -X main.version=${{ github.ref_name }}
 
-      - name: Publish package to PyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@cef221092ed1bacb1cc03d23a2d87d1d172e277b # v1.14.0
 
   github-deploy:
     name: Release to GitHub
     if: github.ref_type == 'tag'
-    needs: [lint, test]
+    needs: [prek, test]
     environment: github-releases
     permissions:
       contents: write
     env:
-      CHANGELOG: https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md
       PRERELEASE: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
 
-      - name: Create GitHub Release
-        run: |
-          gh release create ${GITHUB_REF_NAME} \
-            --title ${GITHUB_REF_NAME} \
-            --notes="See [the CHANGELOG](${CHANGELOG}) for more details." \
-            --draft=${PRERELEASE} \
-            --prerelease=${PRERELEASE}
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        with:
+          args: release --clean --draft=${{ env.PRERELEASE }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

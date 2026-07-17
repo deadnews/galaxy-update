@@ -1,0 +1,29 @@
+version: 2
+
+builds:
+  - main: ./cmd/galaxy-update/
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -X main.version={{ .Version }}
+
+release:
+  prerelease: auto
+  footer: |
+    See [the CHANGELOG]({{ .GitURL }}/blob/main/CHANGELOG.md) for more details.
+
+changelog:
+  sort: asc
+  use: git
+  filters:
+    exclude:
+      - ^chore
+      - ^test
+      - ^(ci|build|chore)\(deps.*\)
