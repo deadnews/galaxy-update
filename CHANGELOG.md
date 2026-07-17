@@ -1,10 +1,10 @@
 # Changelog
 
-## [1.1.0-alpha.0](https://github.com/deadnews/galaxy-update/compare/v1.0.1...v1.1.0-alpha.0) - 2026-07-17
+## [1.1.0](https://github.com/deadnews/galaxy-update/compare/v1.0.1...v1.1.0) - 2026-07-17
 
 ### Features
 
-- support roles and preserve comments on update - ([99048ee](https://github.com/deadnews/galaxy-update/commit/99048ee0b3425db3e312bb6cc8dacdd64b00c2f9))
+- support roles and preserve comments on update ([#68](https://github.com/deadnews/galaxy-update/issues/68)) - ([9c6c1e2](https://github.com/deadnews/galaxy-update/commit/9c6c1e27eeae0aec3efe86348abcc6708f0d7cec))
 
 ## [1.0.1](https://github.com/deadnews/galaxy-update/compare/v1.0.0...v1.0.1) - 2026-02-09
 
