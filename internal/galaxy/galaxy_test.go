@@ -49,6 +49,22 @@ roles:
 	assert.Contains(t, out, "version: 8.0.0")
 }
 
+func TestRun_updatesRoleWithDashedNamespace(t *testing.T) {
+	dir := t.TempDir()
+	path := writeReq(t, dir, `---
+roles:
+  - name: dev-sec.ssh-hardening
+    version: 9.0.0
+`)
+
+	client := startAPI(t, nil, map[string]string{"dev-sec.ssh-hardening": "9.9.0"})
+	results, err := Run(t.Context(), client, []string{path})
+	require.NoError(t, err)
+
+	assert.Equal(t, StatusUpdated, statusByName(results)["dev-sec.ssh-hardening"])
+	assert.Contains(t, readFile(t, path), "version: 9.9.0")
+}
+
 func TestRun_skipsNonGalaxyEntries(t *testing.T) {
 	dir := t.TempDir()
 	path := writeReq(t, dir, `---

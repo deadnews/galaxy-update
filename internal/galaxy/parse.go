@@ -10,7 +10,7 @@ import (
 )
 
 // galaxyNameRe matches a namespace.name reference installable from Galaxy.
-var galaxyNameRe = regexp.MustCompile(`^\w+\.[\w-]+$`)
+var galaxyNameRe = regexp.MustCompile(`^[\w-]+\.[\w-]+$`)
 
 // kind distinguishes a collection entry from a role entry.
 type kind int
