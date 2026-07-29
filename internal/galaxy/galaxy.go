@@ -2,9 +2,12 @@
 package galaxy
 
 import (
+	"cmp"
 	"context"
-	"fmt"
+	"errors"
 )
+
+var errNotResolved = errors.New("not resolved")
 
 // Status classifies the outcome of processing one entry.
 type Status int
@@ -34,11 +37,7 @@ func Run(ctx context.Context, c *Client, files []string) ([]Result, error) {
 		return nil, err
 	}
 
-	collNames, roleNames := namesToResolve(parsed)
-	resolved := map[kind]resolution{
-		kindCollection: c.resolveCollections(ctx, collNames),
-		kindRole:       c.resolveRoles(ctx, roleNames),
-	}
+	resolved := c.resolve(ctx, refsToResolve(parsed))
 
 	var results []Result
 	for i := range parsed {
@@ -54,32 +53,27 @@ func Run(ctx context.Context, c *Client, files []string) ([]Result, error) {
 	return results, nil
 }
 
-type resolution struct {
-	versions map[string]string
-	errs     map[string]error
-}
-
-// namesToResolve collects the galaxy names to look up, split by kind.
-func namesToResolve(parsed []fileData) (collections, roles []string) {
+// refsToResolve collects the distinct galaxy references to look up.
+func refsToResolve(parsed []fileData) []ref {
+	var refs []ref
+	seen := make(map[ref]bool)
 	for _, fd := range parsed {
 		for _, e := range fd.entries {
-			if e.skip {
+			r := ref{kind: e.kind, name: e.name}
+			if e.skip || seen[r] {
 				continue
 			}
-			if e.kind == kindRole {
-				roles = append(roles, e.name)
-			} else {
-				collections = append(collections, e.name)
-			}
+			seen[r] = true
+			refs = append(refs, r)
 		}
 	}
-	return collections, roles
+	return refs
 }
 
-func classifyFile(fd *fileData, resolved map[kind]resolution) (results []Result, changed bool) {
+func classifyFile(fd *fileData, resolved map[ref]lookup) (results []Result, changed bool) {
 	for i := range fd.entries {
 		e := &fd.entries[i]
-		result := classifyEntry(fd.path, e, resolved[e.kind])
+		result := classifyEntry(fd.path, e, resolved)
 		if result.Status == StatusUpdated {
 			e.setVersion(result.New)
 			changed = true
@@ -89,25 +83,22 @@ func classifyFile(fd *fileData, resolved map[kind]resolution) (results []Result,
 	return results, changed
 }
 
-func classifyEntry(path string, e *entry, res resolution) Result {
+func classifyEntry(path string, e *entry, resolved map[ref]lookup) Result {
 	result := Result{File: path, Name: e.name, Old: e.version}
 	if e.skip {
 		result.Status = StatusSkipped
 		return result
 	}
 
-	latest, ok := res.versions[e.name]
-	if !ok {
+	l := resolved[ref{kind: e.kind, name: e.name}]
+	if l.err != nil || l.version == "" {
 		result.Status = StatusError
-		result.Err = res.errs[e.name]
-		if result.Err == nil {
-			result.Err = fmt.Errorf("no result for %s", e.name)
-		}
+		result.Err = cmp.Or(l.err, errNotResolved)
 		return result
 	}
 
-	result.New = latest
-	if e.version == latest {
+	result.New = l.version
+	if e.version == l.version {
 		result.Status = StatusCurrent
 	} else {
 		result.Status = StatusUpdated

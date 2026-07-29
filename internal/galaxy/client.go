@@ -118,52 +118,42 @@ func (c *Client) getJSON(ctx context.Context, endpoint string, v any) error {
 	return nil
 }
 
-func (c *Client) resolveCollections(ctx context.Context, names []string) resolution {
-	return resolveAll(names, func(name string) (string, error) {
-		return c.LatestCollection(ctx, name)
-	})
+// ref identifies one collection or role to look up.
+type ref struct {
+	kind kind
+	name string
 }
 
-func (c *Client) resolveRoles(ctx context.Context, names []string) resolution {
-	return resolveAll(names, func(name string) (string, error) {
-		return c.LatestRole(ctx, name)
-	})
+// lookup is the outcome of looking up one ref.
+type lookup struct {
+	version string
+	err     error
 }
 
-// resolveAll applies fn to each unique name concurrently, collecting versions
-// and per-name errors.
-func resolveAll(names []string, fn func(string) (string, error)) resolution {
-	res := resolution{versions: make(map[string]string), errs: make(map[string]error)}
+// resolve looks up every ref concurrently.
+func (c *Client) resolve(ctx context.Context, refs []ref) map[ref]lookup {
+	resolved := make(map[ref]lookup, len(refs))
 
 	var mu sync.Mutex
 	var wg sync.WaitGroup
-	for _, name := range unique(names) {
+	for _, r := range refs {
 		wg.Go(func() {
-			version, err := fn(name)
+			version, err := c.latest(ctx, r)
 
 			mu.Lock()
 			defer mu.Unlock()
-			if err != nil {
-				res.errs[name] = err
-			} else {
-				res.versions[name] = version
-			}
+			resolved[r] = lookup{version: version, err: err}
 		})
 	}
 	wg.Wait()
-	return res
+	return resolved
 }
 
-func unique(names []string) []string {
-	seen := make(map[string]bool, len(names))
-	result := make([]string, 0, len(names))
-	for _, name := range names {
-		if !seen[name] {
-			seen[name] = true
-			result = append(result, name)
-		}
+func (c *Client) latest(ctx context.Context, r ref) (string, error) {
+	if r.kind == kindRole {
+		return c.LatestRole(ctx, r.name)
 	}
-	return result
+	return c.LatestCollection(ctx, r.name)
 }
 
 // compareVersions orders versions by dotted-numeric comparison.
