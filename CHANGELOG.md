@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.1.1](https://github.com/deadnews/galaxy-update/compare/v1.1.0...v1.1.1) - 2026-08-22
+
+### Bug fixes
+
+- match role names with dashed namespaces - ([43135d5](https://github.com/deadnews/galaxy-update/commit/43135d509fcfeb7d609ee474804ad05b5dc904e4))
+
+### Refactor
+
+- key version lookups by kind and name - ([495a1b8](https://github.com/deadnews/galaxy-update/commit/495a1b8f04cd63797c73fea259a217b9a429c105))
+
+### Chores
+
+- _(make)_ add `alpha` target for pre-release tags - ([78acc24](https://github.com/deadnews/galaxy-update/commit/78acc2454a87f1d3ca3fede136a7a47e304ee787))
+
+### Dependencies
+
+- update to `go:1.27` - ([8b80cde](https://github.com/deadnews/galaxy-update/commit/8b80cdeda033ba05faae6f2b4e4c857ce16ebab5))
+
 ## [1.1.0](https://github.com/deadnews/galaxy-update/compare/v1.0.1...v1.1.0) - 2026-07-17
 
 ### Features
