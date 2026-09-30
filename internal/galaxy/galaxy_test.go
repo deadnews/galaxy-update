@@ -109,6 +109,33 @@ collections:
 	assert.Equal(t, "---\n", out[:4])
 }
 
+func TestRun_writesVersionAsString(t *testing.T) {
+	dir := t.TempDir()
+	path := writeReq(t, dir, `---
+collections:
+  - name: community.general
+    version: 9
+  - name: ansible.posix
+    version:
+roles:
+  - name: geerlingguy.docker
+    version: 7.9
+`)
+
+	client := startAPI(t,
+		map[string]string{"community.general": "11.2.0", "ansible.posix": "5.0.0"},
+		map[string]string{"geerlingguy.docker": "8.0"},
+	)
+	_, err := Run(t.Context(), client, []string{path})
+	require.NoError(t, err)
+
+	out := readFile(t, path)
+	assert.Contains(t, out, "version: 11.2.0")
+	assert.Contains(t, out, "version: 5.0.0")
+	assert.Contains(t, out, `version: "8.0"`)
+	assert.NotContains(t, out, "!!")
+}
+
 func TestRun_unchangedFileNotRewritten(t *testing.T) {
 	dir := t.TempDir()
 	content := "---\ncollections:\n  - name: community.general\n    version: 11.2.0\n"

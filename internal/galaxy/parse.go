@@ -144,7 +144,7 @@ func (e *entry) setVersion(version string) {
 		return
 	}
 	if v := mapValue(item, "version"); v != nil {
-		v.Value = version
+		v.Value, v.Tag = version, "!!str"
 		return
 	}
 	item.Content = append(item.Content, scalar("version"), scalar(version))
