@@ -65,7 +65,8 @@ func parseFile(path string) (fileData, error) {
 	}
 
 	root := doc.Content[0]
-	fd.entries = append(fd.entries, parseEntries(mapValue(root, "collections"), kindCollection)...)
+	fd.entries = append(
+		fd.entries, parseEntries(mapValue(root, "collections"), kindCollection)...)
 	fd.entries = append(fd.entries, parseEntries(mapValue(root, "roles"), kindRole)...)
 	return fd, nil
 }
@@ -156,9 +157,12 @@ func scalar(value string) *yaml.Node {
 
 func mappingNode(name, version string) yaml.Node {
 	return yaml.Node{
-		Kind:    yaml.MappingNode,
-		Tag:     "!!map",
-		Content: []*yaml.Node{scalar("name"), scalar(name), scalar("version"), scalar(version)},
+		Kind: yaml.MappingNode,
+		Tag:  "!!map",
+		Content: []*yaml.Node{
+			scalar("name"), scalar(name),
+			scalar("version"), scalar(version),
+		},
 	}
 }
 

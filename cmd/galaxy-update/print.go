@@ -83,13 +83,15 @@ func printResult(r *galaxy.Result) {
 		if r.Old == "" {
 			fmt.Printf("  %s %s → %s\n", label(colorYellow, "UPDATED"), r.Name, r.New)
 		} else {
-			fmt.Printf("  %s %s %s → %s\n", label(colorYellow, "UPDATED"), r.Name, r.Old, r.New)
+			fmt.Printf("  %s %s %s → %s\n",
+				label(colorYellow, "UPDATED"), r.Name, r.Old, r.New)
 		}
 	case galaxy.StatusCurrent:
 		fmt.Printf("  %s %s %s\n", label(colorGreen, "OK"), r.Name, r.Old)
 	case galaxy.StatusSkipped:
 		fmt.Printf("  %s %s\n", label(colorDim, "SKIP"), r.Name)
 	case galaxy.StatusError:
-		fmt.Printf("  %s %s  %s\n", label(colorRed, "ERROR"), r.Name, paint(colorRed, r.Err.Error()))
+		fmt.Printf("  %s %s  %s\n",
+			label(colorRed, "ERROR"), r.Name, paint(colorRed, r.Err.Error()))
 	}
 }
