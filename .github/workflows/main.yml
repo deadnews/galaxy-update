@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run prek
-        uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+        uses: j178/prek-action@7b101f8338a08d2bd6fdb3625e4e7692428763a3 # v3.1.1
 
   test:
     name: Test
@@ -62,13 +62,13 @@ jobs:
           go-version-file: go.mod
 
       - name: Build wheels
-        uses: deadnews/go-wheel-action@35c6f5b9ffdd11dbdc7043ea3ef71372aa6f2fe7 # v1.0.3
+        uses: deadnews/go-wheel-action@b730f9430222bc478ed271f8d2f2efa7b32a33ec # v1.1.0
         with:
           package: ./cmd/galaxy-update
           ldflags: -s -X main.version=${{ github.ref_name }}
 
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3
 
   github-deploy:
     name: Release to GitHub
@@ -90,7 +90,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           args: release --clean --draft=${{ env.PRERELEASE }}
         env:
