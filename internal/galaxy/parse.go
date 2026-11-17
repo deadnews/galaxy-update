@@ -88,7 +88,7 @@ func parseEntries(seq *yaml.Node, kind kind) []entry {
 
 	entries := make([]entry, 0, len(seq.Content))
 	for _, item := range seq.Content {
-		//exhaustive:ignore // only scalar and mapping entries are meaningful
+		//exhaustive:ignore
 		switch item.Kind {
 		case yaml.ScalarNode:
 			entries = append(entries, entry{
