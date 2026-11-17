@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.1.2](https://github.com/deadnews/galaxy-update/compare/v1.1.1...v1.1.2) - 2026-11-17
+
+### Bug fixes
+
+- look up roles by `src` - ([af5e651](https://github.com/deadnews/galaxy-update/commit/af5e6516a210b3b4403f2e9fa1a9d838d9227648))
+- skip collections from non-galaxy sources, update `type: galaxy` - ([a533d12](https://github.com/deadnews/galaxy-update/commit/a533d12f65d66899ed9499127476042c71273bf4))
+- write updated versions as strings - ([82c1d72](https://github.com/deadnews/galaxy-update/commit/82c1d7207711e4354b30111a480773160dac9daf))
+
+### Refactor
+
+- drop `errNotResolved` - ([f1c6c91](https://github.com/deadnews/galaxy-update/commit/f1c6c91330e6dbd0c87edacad00cf8e4177efa06))
+- write files with `yaml.Dump` options - ([6bab416](https://github.com/deadnews/galaxy-update/commit/6bab416a9d8ca10f7f9846851136500fadef9d44))
+
+### Styling
+
+- drop args from `exhaustive` directive - ([be06ff0](https://github.com/deadnews/galaxy-update/commit/be06ff0e0ff99009075d475459675dc5ae62f72d))
+- break long lines - ([02f7335](https://github.com/deadnews/galaxy-update/commit/02f7335af0d8ea275e94e9d2a2e3117b25e8c30b))
+
+### Chores
+
+- _(make)_ default `tag` to bumped version - ([70b4e6c](https://github.com/deadnews/galaxy-update/commit/70b4e6cbafc8bd256d58662cffc104b38ba7baf4))
+- _(prek)_ build `golangci-lint` with a prek-managed go - ([5cd33c4](https://github.com/deadnews/galaxy-update/commit/5cd33c42f7d3bb2df7b08dedb088bb935d85af76))
+
+### Dependencies
+
+- update deps - ([c711b61](https://github.com/deadnews/galaxy-update/commit/c711b6189dc9dc5d1d9fb0e272d757a6f9872168))
+
 ## [1.1.1](https://github.com/deadnews/galaxy-update/compare/v1.1.0...v1.1.1) - 2026-08-22
 
 ### Bug fixes
