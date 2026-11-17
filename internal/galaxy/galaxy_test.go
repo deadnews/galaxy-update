@@ -1,6 +1,7 @@
 package galaxy
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -107,6 +108,17 @@ collections:
 	assert.Contains(t, out, "# posix head")
 	assert.Contains(t, out, "name: ansible.posix # posix line")
 	assert.Equal(t, "---\n", out[:4])
+}
+
+func TestRun_keepsLongLinesUnfolded(t *testing.T) {
+	dir := t.TempDir()
+	long := "    description: " + strings.Repeat("word ", 30) + "end\n"
+	path := writeReq(t, dir, "---\ncollections:\n  - name: community.general\n"+long)
+
+	_, err := Run(t.Context(), testClient(t), []string{path})
+	require.NoError(t, err)
+
+	assert.Contains(t, readFile(t, path), long)
 }
 
 func TestRun_writesVersionAsString(t *testing.T) {

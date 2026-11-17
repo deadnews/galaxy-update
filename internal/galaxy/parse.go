@@ -1,7 +1,6 @@
 package galaxy
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"regexp"
@@ -166,21 +165,16 @@ func mappingNode(name, version string) yaml.Node {
 	}
 }
 
-// writeFile re-encodes the document with a leading "---" and 2-space indent.
+// writeFile re-encodes the document.
+// V3 defaults keep indented sequences and legacy quoting.
 func writeFile(fd *fileData) error {
-	var buf bytes.Buffer
-	buf.WriteString("---\n")
-
-	enc := yaml.NewEncoder(&buf)
-	enc.SetIndent(2)
-	if err := enc.Encode(fd.doc); err != nil {
+	out, err := yaml.Dump(fd.doc, yaml.WithV3Defaults(),
+		yaml.WithIndent(2), yaml.WithLineWidth(-1), yaml.WithExplicitStart())
+	if err != nil {
 		return fmt.Errorf("encode %s: %w", fd.path, err)
 	}
-	if err := enc.Close(); err != nil {
-		return fmt.Errorf("close encoder %s: %w", fd.path, err)
-	}
 
-	if err := os.WriteFile(fd.path, buf.Bytes(), 0o600); err != nil {
+	if err := os.WriteFile(fd.path, out, 0o600); err != nil {
 		return fmt.Errorf("write %s: %w", fd.path, err)
 	}
 	return nil
