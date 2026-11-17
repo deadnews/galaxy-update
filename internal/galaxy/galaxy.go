@@ -1,13 +1,7 @@
 // Package galaxy updates Ansible collection and role versions to the latest release.
 package galaxy
 
-import (
-	"cmp"
-	"context"
-	"errors"
-)
-
-var errNotResolved = errors.New("not resolved")
+import "context"
 
 // Status classifies the outcome of processing one entry.
 type Status int
@@ -91,9 +85,9 @@ func classifyEntry(path string, e *entry, resolved map[ref]lookup) Result {
 	}
 
 	l := resolved[ref{kind: e.kind, name: e.name}]
-	if l.err != nil || l.version == "" {
+	if l.err != nil {
 		result.Status = StatusError
-		result.Err = cmp.Or(l.err, errNotResolved)
+		result.Err = l.err
 		return result
 	}
 

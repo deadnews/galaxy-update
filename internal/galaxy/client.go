@@ -91,7 +91,9 @@ func (c *Client) LatestRole(ctx context.Context, name string) (string, error) {
 
 	versions := make([]string, 0, len(body.Results[0].SummaryFields.Versions))
 	for _, v := range body.Results[0].SummaryFields.Versions {
-		versions = append(versions, v.Name)
+		if v.Name != "" {
+			versions = append(versions, v.Name)
+		}
 	}
 	if len(versions) == 0 {
 		return "", errNoVersion
