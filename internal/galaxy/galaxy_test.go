@@ -86,8 +86,32 @@ roles:
 	status := statusByName(results)
 	assert.Equal(t, StatusSkipped, status["private.collection"])
 	assert.Equal(t, StatusSkipped, status["ansible.posix"])
-	assert.Equal(t, StatusSkipped, status["geerlingguy.docker"])
+	assert.Equal(t, StatusSkipped, status["https://github.com/geerlingguy/ansible-role-docker"])
 	assert.Contains(t, readFile(t, path), "type: git")
+}
+
+func TestRun_updatesRolesBySrc(t *testing.T) {
+	dir := t.TempDir()
+	path := writeReq(t, dir, `---
+roles:
+  - src: geerlingguy.docker
+    version: 7.0.0
+  - src: geerlingguy.pip
+    name: pip
+`)
+
+	client := startAPI(t, nil, map[string]string{"geerlingguy.docker": "8.0.0", "geerlingguy.pip": "3.0.0"})
+	results, err := Run(t.Context(), client, []string{path})
+	require.NoError(t, err)
+
+	status := statusByName(results)
+	assert.Equal(t, StatusUpdated, status["geerlingguy.docker"])
+	assert.Equal(t, StatusUpdated, status["geerlingguy.pip"])
+
+	out := readFile(t, path)
+	assert.Contains(t, out, "version: 8.0.0")
+	assert.Contains(t, out, "name: pip")
+	assert.Contains(t, out, "version: 3.0.0")
 }
 
 func TestRun_updatesExplicitPublicGalaxyEntries(t *testing.T) {

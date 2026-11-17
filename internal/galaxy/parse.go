@@ -1,6 +1,7 @@
 package galaxy
 
 import (
+	"cmp"
 	"fmt"
 	"net/url"
 	"os"
@@ -105,24 +106,21 @@ func parseEntries(seq *yaml.Node, kind kind) []entry {
 }
 
 func mappingEntry(item *yaml.Node, kind kind) entry {
-	name := scalarValue(item, "name")
 	e := entry{
 		kind:    kind,
-		name:    name,
+		name:    scalarValue(item, "name"),
 		version: scalarValue(item, "version"),
 		node:    item,
-	}
-
-	if !galaxyNameRe.MatchString(name) {
-		e.skip = true
-		return e
 	}
 	switch kind {
 	case kindCollection:
 		e.skip = !publicGalaxy(item)
 	case kindRole:
-		e.skip = scalarValue(item, "src") != "" || scalarValue(item, "scm") != ""
+		// A role's src is its Galaxy reference, name only its install directory.
+		e.name = cmp.Or(scalarValue(item, "src"), e.name)
+		e.skip = scalarValue(item, "scm") != ""
 	}
+	e.skip = e.skip || !galaxyNameRe.MatchString(e.name)
 	return e
 }
 
