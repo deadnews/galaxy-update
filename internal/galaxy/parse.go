@@ -2,6 +2,7 @@ package galaxy
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"regexp"
 
@@ -118,11 +119,24 @@ func mappingEntry(item *yaml.Node, kind kind) entry {
 	}
 	switch kind {
 	case kindCollection:
-		e.skip = scalarValue(item, "type") != ""
+		e.skip = !publicGalaxy(item)
 	case kindRole:
 		e.skip = scalarValue(item, "src") != "" || scalarValue(item, "scm") != ""
 	}
 	return e
+}
+
+// publicGalaxy reports whether a collection installs from galaxyHost, the only host queried.
+func publicGalaxy(item *yaml.Node) bool {
+	if typ := scalarValue(item, "type"); typ != "" && typ != "galaxy" {
+		return false
+	}
+	source := scalarValue(item, "source")
+	if source == "" {
+		return true
+	}
+	u, err := url.Parse(source)
+	return err == nil && u.Hostname() == galaxyHost
 }
 
 // scalarValue returns the string value of key in a mapping node, or empty.

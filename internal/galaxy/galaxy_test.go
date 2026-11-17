@@ -73,6 +73,8 @@ collections:
   - name: private.collection
     type: git
     source: https://example.com/repo.git
+  - name: ansible.posix
+    source: https://hub.example.com/api/galaxy/
 roles:
   - name: geerlingguy.docker
     src: https://github.com/geerlingguy/ansible-role-docker
@@ -83,8 +85,29 @@ roles:
 
 	status := statusByName(results)
 	assert.Equal(t, StatusSkipped, status["private.collection"])
+	assert.Equal(t, StatusSkipped, status["ansible.posix"])
 	assert.Equal(t, StatusSkipped, status["geerlingguy.docker"])
 	assert.Contains(t, readFile(t, path), "type: git")
+}
+
+func TestRun_updatesExplicitPublicGalaxyEntries(t *testing.T) {
+	dir := t.TempDir()
+	path := writeReq(t, dir, `---
+collections:
+  - name: community.general
+    type: galaxy
+    version: 9.0.1
+  - name: ansible.posix
+    source: https://galaxy.ansible.com
+    version: 1.0.0
+`)
+
+	results, err := Run(t.Context(), testClient(t), []string{path})
+	require.NoError(t, err)
+
+	status := statusByName(results)
+	assert.Equal(t, StatusUpdated, status["community.general"])
+	assert.Equal(t, StatusUpdated, status["ansible.posix"])
 }
 
 func TestRun_preservesCommentsAndFormatting(t *testing.T) {

@@ -15,7 +15,10 @@ import (
 	"time"
 )
 
-const defaultBaseURL = "https://galaxy.ansible.com/api"
+const (
+	galaxyHost     = "galaxy.ansible.com"
+	defaultBaseURL = "https://" + galaxyHost + "/api"
+)
 
 var (
 	errNoVersion = errors.New("no versions found")
